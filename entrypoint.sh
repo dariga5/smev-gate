@@ -1,5 +1,67 @@
 #!/bin/sh
 
+runAdapter() {  
+  JRE=/bin/java
+  DEFAULT_USER_PORT=8778
+  INIFILE=config.ini
+  USER_JAVA=
+
+  if [ -f "$INIFILE" ]; then
+      # echo "Reading $INIFILE"
+
+      USER_JAVA=$(awk -F "=" '/^java/ {gsub(/[ \t]/, "", $2); print $2}' $INIFILE)        
+
+      if [ -n "$USER_JAVA" ]; then
+        USER_JAVA="$USER_JAVA$JRE"     
+      fi
+
+      USER_PORT=$(awk -F "=" '/^port/ {gsub(/[ \t]/, "", $2); print $2}' $INIFILE)    
+            LOCAL_STORAGE=$(awk -F "=" '/^local_storage/ {gsub(/[ \t]/, "", $2); print $2}' $INIFILE)
+  else
+    echo "$INIFILE not exists"
+    if [ -n "$USER_JAVA" ]; then
+      USER_JAVA="$JAVA_HOME/jre$JRE"
+    else
+      echo "JAVA_HOME variable not set"
+    fi
+  fi
+
+  if [ -n "$USER_JAVA" ]; then
+    echo 1 >> /dev/null
+  else
+    echo "Java path not SET. Please SET correct path to JRE in config.ini."
+    exit 1
+  fi  
+
+  if [ -n "$USER_PORT" ]; then
+    echo 1 >> /dev/null
+  else
+    USER_PORT=$DEFAULT_USER_PORT
+  fi
+
+  DEFAULT_LOCAL_STORAGE=/tmp/adapter
+
+  if [ -n "$LOCAL_STORAGE" ]; then
+    echo 1 >> /dev/null
+  else
+    LOCAL_STORAGE=$DEFAULT_LOCAL_STORAGE
+  fi
+
+  # echo "java: $USER_JAVA"
+  # echo "port: $USER_PORT"
+
+  export port="$USER_PORT"
+
+  $USER_JAVA -Dfile.encoding=UTF-8 -Dlocal_storage="$LOCAL_STORAGE" -jar bpm-service.jar > /dev/null 2>&1
+  # $USER_JAVA -Dfile.encoding=UTF-8 -Dlogback=logback_debug.xml -jar "$JAR_NAME" > /dev/null 2>&1 &
+
+  echo $! > $pidFile
+}
+
+
+
+set -e
+
 if [[ ! -x $JAVA_HOME ]]; then
     JAVA_HOME=/usr/lib/java
 fi
@@ -34,4 +96,4 @@ jwt_token_expiration=4800
 jwt_token_refresh=3600
 EOF
 
-exec "$@"
+"$@"
