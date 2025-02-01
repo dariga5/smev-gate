@@ -37,6 +37,8 @@ RUN wget https://repo1.maven.org/maven2/commons-logging/commons-logging/1.1/comm
 #Сборка смэв агента
 FROM java-base
 
+ENV ADAPTER_DIR=
+
 ENV DBHOST=""
 ENV DBPORT=""
 ENV DBNAME=""
@@ -55,6 +57,7 @@ COPY --from=csp-java /usr/lib/java/jre/lib/security/java.security /usr/lib/java/
 COPY --from=csp-java /usr/lib/java/jre/lib/ext/* /usr/lib/java/jre/lib/ext/
 COPY --from=csp-java /var/opt/cprocsp /var/opt/cprocsp
 
+
 RUN useradd smev -d /home/smev -b /home/smev -m \
 && wget https://info.gosuslugi.ru/download.php?id=5586 -O ~/adapter_install.run  \
 && chmod +x ~/adapter_install.run \
@@ -62,10 +65,11 @@ RUN useradd smev -d /home/smev -b /home/smev -m \
 && mv ~/bpm-service-unixbuild /opt/adapter 
 
 COPY ./entrypoint.sh /opt/adapter
-RUN chown -R smev:smev /opt/adapter
+RUN chown -R smev:smev /opt/adapter 
 
 USER smev
 WORKDIR /opt/adapter
+RUN mkdir /opt/adapter/in
 
 ENTRYPOINT [ "/bin/bash", "-x", "entrypoint.sh" ]
-CMD [ "./adapter.sh",  "start" ]
+CMD [ "runAdapter" ]
