@@ -7,8 +7,7 @@ runAdapter() {
   USER_JAVA=
 
   if [ -f "$INIFILE" ]; then
-      # echo "Reading $INIFILE"
-
+    
       USER_JAVA=$(awk -F "=" '/^java/ {gsub(/[ \t]/, "", $2); print $2}' $INIFILE)        
 
       if [ -n "$USER_JAVA" ]; then
@@ -47,13 +46,9 @@ runAdapter() {
     LOCAL_STORAGE=$DEFAULT_LOCAL_STORAGE
   fi
 
-  # echo "java: $USER_JAVA"
-  # echo "port: $USER_PORT"
-
   export port="$USER_PORT"
 
   $USER_JAVA -Dfile.encoding=UTF-8 -Dlocal_storage="$LOCAL_STORAGE" -jar bpm-service.jar > /dev/null 2>&1
-  # $USER_JAVA -Dfile.encoding=UTF-8 -Dlogback=logback_debug.xml -jar "$JAR_NAME" > /dev/null 2>&1 &
 
   echo $! > $pidFile
 }
@@ -96,4 +91,4 @@ jwt_token_expiration=4800
 jwt_token_refresh=3600
 EOF
 
-"$@"
+runAdapter
