@@ -45,18 +45,11 @@ ENV DBNAME=""
 ENV DBUSER=""
 ENV DBPASS=""
 
-ENV RABBITHOST=""
-ENV RABBITTOPIC=""
-ENV RABBITUSER=""
-ENV RABBIPASS=""
-
-
 COPY --from=smev-java /usr/lib/java/jre/lib/ext/*.jar /usr/lib/java/jre/lib/ext/
 
 COPY --from=csp-java /usr/lib/java/jre/lib/security/java.security /usr/lib/java/jre/lib/security/java.security
 COPY --from=csp-java /usr/lib/java/jre/lib/ext/* /usr/lib/java/jre/lib/ext/
 COPY --from=csp-java /var/opt/cprocsp /var/opt/cprocsp
-
 
 RUN useradd smev -d /home/smev -b /home/smev -m \
 && wget https://info.gosuslugi.ru/download.php?id=5586 -O ~/adapter_install.run  \
