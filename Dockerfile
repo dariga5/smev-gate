@@ -65,4 +65,3 @@ WORKDIR /opt/adapter
 RUN mkdir /opt/adapter/in
 
 ENTRYPOINT [ "/bin/bash", "-x", "entrypoint.sh" ]
-CMD [ "runAdapter" ]
