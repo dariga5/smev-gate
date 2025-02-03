@@ -65,16 +65,18 @@ if [[ ! -x $JRE_HOME ]]; then
     JRE_HOME=/usr/lib/java/jre
 fi
 
+DATA_DIR=$ADAPTER_DIR/data
+mkdir -p $DATA_DIR/in
 
 cat << EOF > /opt/adapter/config.ini
 [Settings]
 version=$VERSION
 java=$JRE_HOME
 port=$SERVICE_PORT
-local_storage=$ADAPTER_DIR
+local_storage=$DATA_DIR
 service_name=AdapterRoiv
-storage_path=$ADAPTER_DIR
-incoming_attachments_path=$ADAPTER_DIR/in
+storage_path=$DATA_DIR
+incoming_attachments_path=$DATA_DIR/in
 storage_type=postgresql
 storage_adapter_url=jdbc:postgresql://$DBHOST:$DBPORT/$DBNAME?user=$DBUSER&password=$DBPASS
 storage_configuration_url=jdbc:postgresql://$DBHOST:$DBPORT/$DBNAME?user=$DBUSER&password=$DBPASS
