@@ -1,5 +1,7 @@
 #!/bin/sh
 
+set -e
+
 runAdapter() {  
   JRE=/bin/java
   DEFAULT_USER_PORT=8778
@@ -53,10 +55,6 @@ runAdapter() {
   echo $! > $pidFile
 }
 
-
-
-set -e
-
 if [[ ! -x $JAVA_HOME ]]; then
     JAVA_HOME=/usr/lib/java
 fi
@@ -64,9 +62,6 @@ fi
 if [[ ! -x $JRE_HOME ]]; then
     JRE_HOME=/usr/lib/java/jre
 fi
-
-DATA_DIR=$ADAPTER_DIR/data
-mkdir -p $DATA_DIR/in
 
 cat << EOF > /opt/adapter/config.ini
 [Settings]
